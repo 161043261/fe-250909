@@ -1,0 +1,8 @@
+# Ignore artifacts:
+build
+coverage
+
+.rush
+dist
+node_modules
+public

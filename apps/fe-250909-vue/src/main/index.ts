@@ -1,24 +1,82 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon.jpg?asset'
+import log from 'electron-log/main'
+
+// // Disables hardware acceleration for current app.
+// app.disableHardwareAcceleration()
+
+// The return value of this method indicates whether or not this instance of your application successfully obtained the lock.
+// If it failed to obtain the lock, you can assume that another instance of your application is already running with the lock and exit immediately.
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  log.initialize()
+
+  app.on('second-instance', (event, argv, workingDirectory, additionalData) => {
+    if (is.dev) {
+      log.info('Second instance', event, argv, workingDirectory, additionalData)
+    }
+    if (!mainWindow) {
+      return
+    }
+    if (!mainWindow.isVisible()) {
+      mainWindow.show()
+    }
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore()
+    }
+    mainWindow.focus()
+  })
+}
+
+let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
+  if (mainWindow) {
+    return
+  }
+
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
+  mainWindow = new BrowserWindow({
+    // Window's width in pixels
+    width: 1080,
+    // Window's minimum width.
+    minWidth: 1080,
+    // Window's height in pixels.
+    height: 720,
+    // Window's minimum height.
+    minHeight: 720,
+    // Specify false to create a frameless window.
+    frame: false,
+    // Whether window is resizable.
+    resizable: true,
+    // Whether the window should show in fullscreen.
+    fullscreen: false,
+    // Whether the window can be put into fullscreen mode.
+    fullscreenable: false,
+    // Whether window is maximizable.
+    maximizable: true,
+
+    // show: false,
+    // autoHideMenuBar: true,
+
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      // Whether to throttle animations and timers when the page becomes background.
+      backgroundThrottling: true,
+      // Whether node integration is enabled.
+      nodeIntegration: false,
+      preload: join(__dirname, '../preload/index.js')
+      // sandbox: false
     }
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    if (mainWindow) {
+      mainWindow.show()
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

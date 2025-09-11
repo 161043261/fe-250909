@@ -1,0 +1,16 @@
+{
+  "name": "fe-250909",
+  "version": "1.0.0",
+  "description": "fe-250909",
+  "private": true,
+  "author": "github.com/161043261",
+  "homepage": "https://github.com/161043261/fe-250909",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  }
+}

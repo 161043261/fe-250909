@@ -1,8 +1,6 @@
-# Ignore artifacts:
-build
-coverage
-
-.rush
+out
 dist
-node_modules
-public
+pnpm-lock.yaml
+LICENSE.md
+tsconfig.json
+tsconfig.*.json

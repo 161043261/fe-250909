@@ -1,19 +1,10 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
-  "include": [
-    "vite.config.*",
-    "vitest.config.*",
-    "cypress.config.*",
-    "nightwatch.conf.*",
-    "playwright.config.*",
-    "eslint.config.*"
-  ],
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*"],
   "compilerOptions": {
-    "noEmit": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "types": ["node"]
+    "composite": true,
+    "types": ["electron-vite/node"],
+    // Override moduleResolution
+    "moduleResolution": "bundler"
   }
 }

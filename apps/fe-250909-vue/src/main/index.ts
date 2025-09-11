@@ -102,17 +102,20 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.on('will-navigate', (details) => {
-    console.log('[will-navigate] details.url', details.url)
     const customProtocol = 'showfile:'
 
     if (details.url.startsWith(customProtocol)) {
+      console.log(
+        '[will-navigate] details.url.startsWith(customProtocol), details.url:',
+        details.url
+      )
       details.preventDefault()
       shell.showItemInFolder(decodeURI(details.url).slice(customProtocol.length))
       return
     }
 
     if (!details.isSameDocument) {
-      console.log('[will-navigate] details.isSameDocument === false')
+      console.log('[will-navigate] !details.isSameDocument, details.url:', details.url)
       details.preventDefault()
       shell.openExternal(details.url)
     }
@@ -136,11 +139,12 @@ function switchWindowVisibility(mainWindow: BrowserWindow | null): void {
   }
 }
 
-function createTray() {
+function createTray(): void {
   if (tray) {
     return
   }
   tray = new Tray(icon /** image */)
+  tray.setToolTip('星穹铁道工具箱')
 
   tray.on('click', () => {
     if (mainWindow?.isVisible()) {
@@ -149,7 +153,26 @@ function createTray() {
       switchWindowVisibility(mainWindow)
     }
   })
+
+  tray.on('right-click', () => {
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: mainWindow?.isVisible() ? '隐藏主界面' : '显示主界面',
+        click: () => switchWindowVisibility(mainWindow)
+      },
+      {
+        label: '退出',
+        click: () => app.quit()
+      }
+    ])
+    tray?.popUpContextMenu(contextMenu)
+  })
 }
+
+app.on('ready', () => {
+  createWindow()
+  createTray()
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

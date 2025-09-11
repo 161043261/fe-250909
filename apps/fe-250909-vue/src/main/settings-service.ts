@@ -51,14 +51,16 @@ class SettingsService {
     return this.appSettings
   }
 
-  public setAppSettings(key: keyof IAppSettings, value: unknown): void {
+  public setAndGetAppSettings(key: keyof IAppSettings, value: unknown): IAppSettings {
     const oldValue = this.appSettings[key]
     if (key in this.appSettings && typeof oldValue === typeof value) {
       this.appSettings = {
         ...this.appSettings,
         [key]: value
       }
+      this.saveAppSettings()
     }
+    return this.appSettings
   }
 }
 

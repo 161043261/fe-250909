@@ -51,5 +51,6 @@
       "electron",
       "esbuild"
     ]
-  }
+  },
+  "type": "module"
 }

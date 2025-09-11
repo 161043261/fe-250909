@@ -1,6 +1,6 @@
 # fe-250909
 
-## Versions
+## Env
 
 ```bash
 nvm install 20
@@ -10,7 +10,7 @@ node -v # v20.19.5
 pnpm -v # 10.15.1
 ```
 
-## Init
+## Start
 
 fe-250909-react
 

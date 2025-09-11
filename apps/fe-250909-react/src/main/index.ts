@@ -1,38 +1,93 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon.jpg?asset'
+
+// // Disables hardware acceleration for current app.
+// app.disableHardwareAcceleration()
+
+// The return value of this method indicates whether or not this instance of your application successfully obtained the lock.
+// If it failed to obtain the lock, you can assume that another instance of your application is already running with the lock and exit immediately.
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  app.on('second-instance', (/** event, argv, workingDirectory, additionalData */) => {
+    if (!mainWindow) {
+      return
+    }
+    if (!mainWindow.isVisible()) {
+      // Shows and gives focus to the window.
+      mainWindow.show()
+    }
+    if (mainWindow.isMinimized()) {
+      // Restores the window from minimized state to its previous state.
+      mainWindow.restore()
+    }
+    // Focuses on the window.
+    mainWindow.focus()
+  })
+}
+
+let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
+  if (mainWindow) {
+    return
+  }
+
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
+  mainWindow = new BrowserWindow({
+    // Window's width in pixels
+    width: 1080,
+    // Window's minimum width.
+    minWidth: 1080,
+    // Window's height in pixels.
+    height: 720,
+    // Window's minimum height.
+    minHeight: 720,
+    // Specify false to create a frameless window.
+    frame: false,
+    // Whether window is resizable.
+    resizable: true,
+    // Whether the window should show in fullscreen.
+    fullscreen: false,
+    // Whether the window can be put into fullscreen mode.
+    fullscreenable: false,
+    // Whether window is maximizable.
+    maximizable: true,
+
+    // show: false,
+    // autoHideMenuBar: true,
+
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      // Whether to throttle animations and timers when the page becomes background.
+      backgroundThrottling: true,
+      // Whether node integration is enabled.
+      nodeIntegration: false,
+      preload: join(__dirname, '../preload/index.js')
+      // sandbox: false
     }
   })
 
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev /** !app.isPackaged */ && process.env['ELECTRON_RENDERER_URL']) {
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  } else {
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
+
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    if (mainWindow) {
+      mainWindow.show()
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
 }
 
 // This method will be called when Electron has finished

@@ -13,7 +13,8 @@ const srcDirPath = resolve(targetDirPath, '../../../fe-250909-vue/src/main')
  */
 function mkdirRecursiveSync(dirPath) {
   if (!existsSync(dirPath)) {
-    mkdirRecursiveSync(dirname(dirPath))
+    const parentDirPath = dirname(dirPath)
+    mkdirRecursiveSync(parentDirPath)
     mkdirSync(dirPath)
   }
 }

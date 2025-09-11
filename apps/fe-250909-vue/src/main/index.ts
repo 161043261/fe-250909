@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, Tray } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.jpg?asset'
+
+import settingsService from './settings-service'
 
 // // Disables hardware acceleration for current app.
 // app.disableHardwareAcceleration()
@@ -11,7 +13,7 @@ import icon from '../../resources/icon.jpg?asset'
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
-  app.on('second-instance', (/** event, argv, workingDirectory, additionalData */) => {
+  app.on('second-instance', (/** ev, argv, workingDirectory, additionalData */) => {
     if (!mainWindow) {
       return
     }
@@ -28,7 +30,12 @@ if (!app.requestSingleInstanceLock()) {
   })
 }
 
+if (!settingsService.getAppSettings().debug) {
+  Menu.setApplicationMenu(null)
+}
+
 let mainWindow: BrowserWindow | null = null
+let tray: Tray | null = null
 
 function createWindow(): void {
   if (mainWindow) {
@@ -79,14 +86,68 @@ function createWindow(): void {
   }
 
   mainWindow.on('ready-to-show', () => {
-    if (mainWindow) {
-      mainWindow.show()
-    }
+    mainWindow?.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+
+  mainWindow.on('close', (ev) => {
+    if (!settingsService.getAppSettings().closeDirectly) {
+      ev.preventDefault()
+      mainWindow?.hide()
+    }
+  })
+
+  mainWindow.webContents.on('will-navigate', (details) => {
+    console.log('[will-navigate] details.url', details.url)
+    const customProtocol = 'showfile:'
+
+    if (details.url.startsWith(customProtocol)) {
+      details.preventDefault()
+      shell.showItemInFolder(decodeURI(details.url).slice(customProtocol.length))
+      return
+    }
+
+    if (!details.isSameDocument) {
+      console.log('[will-navigate] details.isSameDocument === false')
+      details.preventDefault()
+      shell.openExternal(details.url)
+    }
+  })
+
+  mainWindow.webContents.on('before-input-event', (ev, input) => {
+    if (input.key.toLowerCase() === 'f12') {
+      mainWindow?.webContents.openDevTools()
+      ev.preventDefault()
+    }
+  })
+
+  // mainWindow.webContents.openDevTools()
+}
+
+function switchWindowVisibility(mainWindow: BrowserWindow | null): void {
+  if (mainWindow?.isVisible()) {
+    mainWindow.hide()
+  } else {
+    mainWindow?.show()
+  }
+}
+
+function createTray() {
+  if (tray) {
+    return
+  }
+  tray = new Tray(icon /** image */)
+
+  tray.on('click', () => {
+    if (mainWindow?.isVisible()) {
+      mainWindow.focus()
+    } else {
+      switchWindowVisibility(mainWindow)
+    }
   })
 }
 

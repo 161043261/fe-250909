@@ -17,8 +17,8 @@ const targetFiles = [
 const projectDir = dirname(fileURLToPath(import.meta.url))
 const srcDir = resolve(projectDir, 'turnbasedgamedata')
 
-const vueStaticDir = resolve(projectDir, 'apps/fe-250909-vue/src/static/raw')
-const reactStaticDir = resolve(projectDir, 'apps/fe-250909-react/src/static/raw')
+const vueStaticRawDir = resolve(projectDir, 'apps/fe-250909-vue/src/static/raw')
+const reactStaticRawDir = resolve(projectDir, 'apps/fe-250909-react/src/static/raw')
 
 /**
  *
@@ -75,8 +75,8 @@ function copyFile(filename, srcPath, targetDir) {
 function syncFiles() {
   const foundFiles = searchFileRecursiveSync(srcDir, targetFiles)
   for (const [filename, srcPath] of Object.entries(foundFiles)) {
-    copyFile(filename, srcPath, vueStaticDir)
-    copyFile(filename, srcPath, reactStaticDir)
+    copyFile(filename, srcPath, vueStaticRawDir)
+    copyFile(filename, srcPath, reactStaticRawDir)
   }
 }
 

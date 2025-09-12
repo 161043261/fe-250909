@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.github.161043261.fe-250909
 productName: fe-250909-react
 directories:
   buildResources: build
@@ -40,4 +40,4 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: https://github.com/161043261/fe-250909

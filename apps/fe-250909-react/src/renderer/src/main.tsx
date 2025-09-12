@@ -4,8 +4,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-)
+const rootContainer = document.getElementById('root')
+
+if (rootContainer) {
+  createRoot(rootContainer).render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  )
+}

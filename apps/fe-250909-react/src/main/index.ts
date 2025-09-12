@@ -94,10 +94,10 @@ function createMainWindow(): void {
     mainWindow?.show()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+  // mainWindow.webContents.setWindowOpenHandler((details) => {
+  //   shell.openExternal(details.url)
+  //   return { action: 'deny' }
+  // })
 
   mainWindow.on('close', (ev) => {
     if (!settingsService.getAppSettings().closeDirectly) {
@@ -170,17 +170,17 @@ function createTray(): void {
       },
       {
         label: '退出',
-        click: () => app.quit()
+        click: () => app.quit() // app.exit(0)
       }
     ])
     tray?.popUpContextMenu(contextMenu)
   })
 }
 
-app.on('ready', () => {
-  createMainWindow()
-  createTray()
-})
+// app.on('ready', () => {
+//   createMainWindow()
+//   createTray()
+// })
 
 // This method will be called when Electron has finished initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -234,6 +234,8 @@ ipcMain.on('main-window-msg', (ev, msg: TMainWindowMsg) => {
       if (settingsService.getAppSettings().closeDirectly) {
         // app.exit(0)
         app.quit()
+      } else {
+        switchWindowVisibility(mainWindow)
       }
       break
     } // case 'close'
@@ -255,23 +257,23 @@ ipcMain.on('main-window-msg', (ev, msg: TMainWindowMsg) => {
     } // case 'maximize'
 
     case 'minimize': {
-      if (mainWindow) {
-        mainWindow?.minimize()
-      }
+      mainWindow?.minimize()
       break
     } // case 'minimize'
 
     case 'reload': {
-      if (mainWindow) {
-        mainWindow.loadFile(join(dirPath, '../renderer/index.html'))
-      }
+      mainWindow?.loadFile(join(dirPath, '../renderer/index.html'))
       break
     } // case 'reload'
   }
 })
 
-ipcMain.handle('read-json-file', async (ev, filenameNoExt: string) => {
-  const jsonStr = await readFile(join(dirPath, `../static/json/${filenameNoExt}.json`), {
+ipcMain.handle('read-json-file', async (ev, filename: string) => {
+  const extName = '.json'
+  if (filename.endsWith(extName)) {
+    filename = filename.slice(-extName.length)
+  }
+  const jsonStr = await readFile(join(dirPath, `../static/json/${filename}.json`), {
     encoding: 'utf-8'
   })
   return JSON.parse(jsonStr)

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs'
+import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'fs'
 import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -54,7 +54,9 @@ function searchFileRecursiveSync(searchDir, filenames) {
         ...foundFiles,
         ...subFoundFiles,
       } // Object.assign(foundFiles, subFoundFiles)
-    } else if (filenames.includes(entry) && !foundFiles[entry]) foundFiles[entry] = entryPath
+    } else if (filenames.includes(entry) && !foundFiles[entry]) {
+      foundFiles[entry] = entryPath
+    }
   }
 
   return foundFiles
@@ -69,6 +71,9 @@ function searchFileRecursiveSync(searchDir, filenames) {
 function copyFile(filename, srcPath, targetDir) {
   mkdirRecursiveSync(targetDir)
   const targetPath = join(targetDir, filename)
+  if (existsSync(targetPath)) {
+    unlinkSync(targetPath)
+  }
   copyFileSync(srcPath, targetPath)
 }
 

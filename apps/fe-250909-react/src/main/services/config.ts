@@ -2,6 +2,7 @@ import { is } from '@electron-toolkit/utils'
 import { app } from 'electron'
 import { join } from 'path'
 import { readdir } from 'fs/promises'
+import { existsSync, mkdirSync } from 'fs'
 
 export interface IConfigService {
   getUserDataPath: () => string
@@ -17,12 +18,16 @@ class ConfigServiceImpl implements IConfigService {
 
   constructor() {
     this.userDataPath = app.getPath('userData')
-    this.appDataPath = app.getPath('appData')
-    this.appSettingsPath = join(this.appDataPath, 'settings.json')
+    this.appDataPath = join(this.userDataPath, './data')
+    if (!existsSync(this.appDataPath)) {
+      mkdirSync(this.appDataPath)
+    }
+
+    this.appSettingsPath = join(this.appDataPath, './settings.json')
 
     if (is.dev) {
-      this.walkDir('userDataPath', this.userDataPath)
-      this.walkDir('appDataPath', this.appDataPath)
+      // this.walkDir('userDataPath:', this.userDataPath)
+      this.walkDir('appDataPath:', this.appDataPath)
     }
   }
 

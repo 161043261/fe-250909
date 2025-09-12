@@ -1,10 +1,12 @@
+// @ts-check
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'fs'
 import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
-const filepath = fileURLToPath(import.meta.url)
-const targetDirPath = dirname(filepath)
+const filePath = fileURLToPath(import.meta.url)
+const targetDirPath = dirname(filePath)
 const srcDirPath = resolve(targetDirPath, '../../../fe-250909-vue/src/common')
 
 /**

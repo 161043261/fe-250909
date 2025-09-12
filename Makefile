@@ -57,6 +57,13 @@ init: ## Initial commit
 	git commit -m "Initial commit"
 	git push -f origin main --set-upstream
 
+.PHONY: sync
+sync: ## Sync Vue to React
+	# node ./sync.js
+	node ./apps/fe-250909-react/src/common/sync.js
+	node ./apps/fe-250909-react/src/main/sync.js
+	node ./apps/fe-250909-react/src/preload/sync.js
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \

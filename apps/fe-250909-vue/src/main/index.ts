@@ -1,11 +1,14 @@
 import { app, shell, BrowserWindow, ipcMain, Menu, Tray } from 'electron'
-import { join } from 'path'
+import { dirname, join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.jpg?asset'
 import api from '@preload/api.json'
 import services, { settingsService } from './services'
 import { TMainWindowMsg } from '@common/types'
 import { readFile } from 'fs/promises'
+import { fileURLToPath } from 'url'
+
+const dirPath = dirname(fileURLToPath(import.meta.url))
 
 // // Disables hardware acceleration for current app.
 // app.disableHardwareAcceleration()
@@ -74,7 +77,7 @@ function createMainWindow(): void {
       backgroundThrottling: true,
       // Whether node integration is enabled.
       nodeIntegration: false,
-      preload: join(__dirname, '../preload/index.js')
+      preload: join(dirPath, '../preload/index.js')
       // sandbox: false
     }
   })
@@ -84,7 +87,7 @@ function createMainWindow(): void {
   if (is.dev /** !app.isPackaged */ && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(dirPath, '../renderer/index.html'))
   }
 
   mainWindow.on('ready-to-show', () => {
@@ -260,7 +263,7 @@ ipcMain.on('main-window-msg', (ev, msg: TMainWindowMsg) => {
 
     case 'reload': {
       if (mainWindow) {
-        mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+        mainWindow.loadFile(join(dirPath, '../renderer/index.html'))
       }
       break
     } // case 'reload'
@@ -268,7 +271,7 @@ ipcMain.on('main-window-msg', (ev, msg: TMainWindowMsg) => {
 })
 
 ipcMain.handle('read-json-file', async (ev, filenameNoExt: string) => {
-  const jsonStr = await readFile(join(__dirname, `../static/json/${filenameNoExt}.json`), {
+  const jsonStr = await readFile(join(dirPath, `../static/json/${filenameNoExt}.json`), {
     encoding: 'utf-8'
   })
   return JSON.parse(jsonStr)

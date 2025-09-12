@@ -13,6 +13,7 @@ pnpm -v # 10.15.1
 ## Synchronize
 
 ```bash
+node ./sync.js
 node ./apps/fe-250909-react/src/common/sync.js
 node ./apps/fe-250909-react/src/main/sync.js
 node ./apps/fe-250909-react/src/preload/sync.js

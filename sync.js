@@ -1,5 +1,6 @@
 // @ts-check
-import { copyFileSync, existsSync, mkdirSync, readdirSync, stat, statSync } from 'fs'
+
+import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs'
 import { dirname, join, resolve } from 'path'
 import { fileURLToPath } from 'url'
 

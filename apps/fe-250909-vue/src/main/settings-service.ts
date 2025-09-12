@@ -1,16 +1,7 @@
 import { existsSync, readFileSync } from 'fs'
 import { writeFile } from 'fs/promises'
 import configService from './config-service'
-
-interface IAppSettings {
-  debug: boolean
-  closeDirectly: boolean
-  themeColor: [number, number, number]
-  lastAchievementUid: string
-  lastGachaUid: string
-  sidebarCollapsed: boolean
-  checkUpdateOnLaunch: boolean
-}
+import { IAppSettings } from '@common/types/index'
 
 class SettingsService {
   private appSettings: IAppSettings

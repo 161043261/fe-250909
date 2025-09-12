@@ -37,7 +37,7 @@ if (!settingsService.getAppSettings().debug) {
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
-function createWindow(): void {
+function createMainWindow(): void {
   if (mainWindow) {
     return
   }
@@ -121,12 +121,12 @@ function createWindow(): void {
     }
   })
 
-  mainWindow.webContents.on('before-input-event', (ev, input) => {
-    if (input.key.toLowerCase() === 'f12') {
-      mainWindow?.webContents.openDevTools()
-      ev.preventDefault()
-    }
-  })
+  // mainWindow.webContents.on('before-input-event', (ev, input) => {
+  //   if (input.key.toLowerCase() === 'f12') {
+  //     mainWindow?.webContents.openDevTools()
+  //     ev.preventDefault()
+  //   }
+  // })
 
   // mainWindow.webContents.openDevTools()
 }
@@ -170,7 +170,7 @@ function createTray(): void {
 }
 
 app.on('ready', () => {
-  createWindow()
+  createMainWindow()
   createTray()
 })
 
@@ -179,7 +179,7 @@ app.on('ready', () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.github.161043261')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -191,12 +191,16 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  createWindow()
+  createMainWindow()
+  createTray()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createMainWindow()
+      createTray()
+    }
   })
 })
 

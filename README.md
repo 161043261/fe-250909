@@ -1,6 +1,6 @@
 # fe-250909
 
-## Env
+## Environments
 
 ```bash
 nvm install 20
@@ -10,28 +10,10 @@ node -v # v20.19.5
 pnpm -v # 10.15.1
 ```
 
-## Start
-
-fe-250909-react
+## Synchronize
 
 ```bash
-pnpm create vite@latest
-
-pnpm add -D @types/node
-
-pnpm add -D prettier
-
-pnpm add tailwindcss @tailwindcss/vite
-
-pnpm add @douyinfe/semi-ui
-
-pnpm add react-router
-
-pnpm add zustand
-```
-
-fe-250909-vue
-
-```bash
-pnpm create vue@latest
+node ./apps/fe-250909-react/src/common/sync.js
+node ./apps/fe-250909-react/src/main/sync.js
+node ./apps/fe-250909-react/src/preload/sync.js
 ```

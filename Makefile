@@ -58,7 +58,7 @@ init: ## Initial commit
 	git push -f origin main --set-upstream
 
 .PHONY: sync
-sync: ## Sync Vue to React
+sync: ## Synchronize Vue common, main and preload to React
 	# node ./sync.js
 	node ./apps/fe-250909-react/src/common/sync.js
 	node ./apps/fe-250909-react/src/main/sync.js

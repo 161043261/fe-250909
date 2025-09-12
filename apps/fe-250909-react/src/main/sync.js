@@ -1,3 +1,5 @@
+// @ts-check
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'fs'
 import { dirname, join, resolve } from 'path'

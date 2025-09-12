@@ -13,8 +13,8 @@
     "paths": {
       "@renderer/*": ["src/renderer/src/*"],
       "@common/*": ["src/common/*"]
-    }
-  },
-  // Override moduleResolution
-  "moduleResolution": "bundler"
+    },
+    // Override moduleResolution
+    "moduleResolution": "bundler"
+  }
 }

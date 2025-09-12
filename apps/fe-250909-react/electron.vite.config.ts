@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   main: {
@@ -29,6 +30,11 @@ export default defineConfig({
         '@common': resolve('src/common')
       }
     },
-    plugins: [react()]
+    plugins: [
+      react(),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      tailwindcss()
+    ]
   }
 })

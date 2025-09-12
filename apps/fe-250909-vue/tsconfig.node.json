@@ -4,13 +4,13 @@
   "compilerOptions": {
     "composite": true,
     "types": ["electron-vite/node"],
-    // Override moduleResolution
-    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@main/*": ["src/main/*"],
       "@preload/*": ["src/preload/*"],
       "@common/*": ["src/common/*"]
-    }
+    },
+    // Override moduleResolution
+    "moduleResolution": "bundler"
   }
 }

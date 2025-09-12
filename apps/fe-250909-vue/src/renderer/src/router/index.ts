@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('@renderer/App.vue')
-  }
+  // {
+  //   path: '/',
+  //   component: () => import('@renderer/App.vue')
+  // }
 ]
 
 const router = createRouter({

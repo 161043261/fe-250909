@@ -1,9 +1,14 @@
 import { existsSync, readFileSync } from 'fs'
 import { writeFile } from 'fs/promises'
-import configService from './config-service'
+import configService from './config'
 import { IAppSettings } from '@common/types/index'
 
-class SettingsService {
+export interface ISettingsService {
+  getAppSettings: () => IAppSettings
+  setAppSettings: (key: keyof IAppSettings, value: unknown) => IAppSettings
+}
+
+class SettingsServiceImpl implements ISettingsService {
   private appSettings: IAppSettings
   private appSettingsPath: string
   private defaultSettings: IAppSettings = {
@@ -42,7 +47,7 @@ class SettingsService {
     return this.appSettings
   }
 
-  public setAndGetAppSettings(key: keyof IAppSettings, value: unknown): IAppSettings {
+  public setAppSettings(key: keyof IAppSettings, value: unknown): IAppSettings {
     const oldValue = this.appSettings[key]
     if (key in this.appSettings && typeof oldValue === typeof value) {
       this.appSettings = {
@@ -55,4 +60,6 @@ class SettingsService {
   }
 }
 
-export default new SettingsService()
+const settingsService: ISettingsService = new SettingsServiceImpl()
+
+export default settingsService

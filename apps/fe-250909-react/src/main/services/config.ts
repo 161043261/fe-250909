@@ -3,7 +3,14 @@ import { app } from 'electron'
 import { join } from 'path'
 import { readdir } from 'fs/promises'
 
-class ConfigService {
+export interface IConfigService {
+  getUserDataPath: () => string
+  getAppDataPath: () => string
+  getAppSettingsPath: () => string
+  getAppVersion: () => string
+}
+
+class ConfigServiceImpl implements IConfigService {
   private userDataPath: string
   private appDataPath: string
   private appSettingsPath: string
@@ -19,7 +26,7 @@ class ConfigService {
     }
   }
 
-  async walkDir(name: string, absPath: string): Promise<void> {
+  private async walkDir(name: string, absPath: string): Promise<void> {
     console.log(name, absPath)
     const entries = await readdir(absPath, {
       encoding: 'utf-8',
@@ -53,4 +60,6 @@ class ConfigService {
   }
 }
 
-export default new ConfigService()
+const configService: IConfigService = new ConfigServiceImpl()
+
+export default configService

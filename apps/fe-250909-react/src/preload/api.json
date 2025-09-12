@@ -1,0 +1,5 @@
+{
+  "configService": ["getUserDataPath", "getAppDataPath", "getAppSettingsPath", "getAppVersion"],
+
+  "settingsService": ["getAppSettings", "setAppSettings"]
+}

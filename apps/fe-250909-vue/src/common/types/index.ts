@@ -7,3 +7,5 @@ export interface IAppSettings {
   sidebarCollapsed: boolean
   checkUpdateOnLaunch: boolean
 }
+
+export type TMainWindowMsg = 'close' | 'esc' | 'maximize' | 'minimize' | 'reload'
